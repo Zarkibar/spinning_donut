@@ -1,7 +1,6 @@
 import pygame
 import sys
 import math
-import time
 
 # Initialize Pygame
 pygame.init()
@@ -11,15 +10,19 @@ SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Spinning Donut")
+clock = pygame.time.Clock()
 
 screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
-
+CAM_MOVE_SPEED = 0.2
 DOT_COLOR = (150, 150, 150)
 DOT_RADIUS = 1
 
 k1 = 500
 k2 = 3
+
+move_horizontal = 0
+move_vertical = 0
 
 theta = math.pi / 180
 
@@ -108,14 +111,50 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                move_vertical = 1
+            elif event.key == pygame.K_s:
+                move_vertical = -1
+            if event.key == pygame.K_d:
+                move_horizontal = 1
+            elif event.key == pygame.K_a:
+                move_horizontal = -1
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_w:
+                move_vertical = 0
+            elif event.key == pygame.K_s:
+                move_vertical = 0
+            if event.key == pygame.K_d:
+                move_horizontal = 0
+            elif event.key == pygame.K_a:
+                move_horizontal = 0
+
 
     screen.fill((30, 30, 30))
+
+    if move_vertical == 1:
+        for point in points:
+            point[2] -= CAM_MOVE_SPEED
+    elif move_vertical == -1:
+        for point in points:
+            point[2] += CAM_MOVE_SPEED
+
+    if move_horizontal == 1:
+        for point in points:
+            point[0] -= CAM_MOVE_SPEED
+    elif move_horizontal == -1:
+        for point in points:
+            point[0] += CAM_MOVE_SPEED
+
 
     update_all_points_rotation(theta)
     show_all_points()
     
     pygame.display.flip()
-    time.sleep(0.01)
+    clock.tick(60)
 
 pygame.quit()
 sys.exit()
