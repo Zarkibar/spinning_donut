@@ -16,6 +16,7 @@ screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
 # Points
 points = [
+    # Cube vertices (original 8)
     [-1, -1, -1],  # point1
     [-1, -1,  1],  # point2
     [-1,  1, -1],  # point3
@@ -24,6 +25,28 @@ points = [
     [ 1, -1,  1],  # point6
     [ 1,  1, -1],  # point7
     [ 1,  1,  1],  # point8
+
+    # Face centers (6)
+    [ 0,  0, -1],  # front face
+    [ 0,  0,  1],  # back face
+    [ 0, -1,  0],  # bottom face
+    [ 0,  1,  0],  # top face
+    [-1,  0,  0],  # left face
+    [ 1,  0,  0],  # right face
+
+    # Edge midpoints (12)
+    [ 0, -1, -1],  # between [-1,-1,-1] and [ 1,-1,-1]
+    [-1,  0, -1],  # between [-1,-1,-1] and [-1, 1,-1]
+    [-1, -1,  0],  # between [-1,-1,-1] and [-1,-1, 1]
+    [ 0,  1, -1],  # between [-1, 1,-1] and [ 1, 1,-1]
+    [-1,  1,  0],  # between [-1, 1,-1] and [-1, 1, 1]
+    [ 0, -1,  1],  # between [-1,-1, 1] and [ 1,-1, 1]
+    [ 0,  1,  1],  # between [-1, 1, 1] and [ 1, 1, 1]
+    [ 1, -1,  0],  # between [ 1,-1,-1] and [ 1,-1, 1]
+    [ 1,  0, -1],  # between [ 1,-1,-1] and [ 1, 1,-1]
+    [ 1,  1,  0],  # between [ 1, 1,-1] and [ 1, 1, 1]
+    [ 1,  0,  1],  # between [ 1,-1, 1] and [ 1, 1, 1]
+    [-1,  0,  1],  # between [-1,-1, 1] and [-1, 1, 1]
 ]
 
 k1 = 400
