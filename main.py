@@ -14,49 +14,14 @@ pygame.display.set_caption("Spinning Donut")
 
 screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
-# Points
-points = [
-    # Cube vertices (original 8)
-    [-1, -1, -1],  # point1
-    [-1, -1,  1],  # point2
-    [-1,  1, -1],  # point3
-    [-1,  1,  1],  # point4
-    [ 1, -1, -1],  # point5
-    [ 1, -1,  1],  # point6
-    [ 1,  1, -1],  # point7
-    [ 1,  1,  1],  # point8
 
-    # Face centers (6)
-    [ 0,  0, -1],  # front face
-    [ 0,  0,  1],  # back face
-    [ 0, -1,  0],  # bottom face
-    [ 0,  1,  0],  # top face
-    [-1,  0,  0],  # left face
-    [ 1,  0,  0],  # right face
-
-    # Edge midpoints (12)
-    [ 0, -1, -1],  # between [-1,-1,-1] and [ 1,-1,-1]
-    [-1,  0, -1],  # between [-1,-1,-1] and [-1, 1,-1]
-    [-1, -1,  0],  # between [-1,-1,-1] and [-1,-1, 1]
-    [ 0,  1, -1],  # between [-1, 1,-1] and [ 1, 1,-1]
-    [-1,  1,  0],  # between [-1, 1,-1] and [-1, 1, 1]
-    [ 0, -1,  1],  # between [-1,-1, 1] and [ 1,-1, 1]
-    [ 0,  1,  1],  # between [-1, 1, 1] and [ 1, 1, 1]
-    [ 1, -1,  0],  # between [ 1,-1,-1] and [ 1,-1, 1]
-    [ 1,  0, -1],  # between [ 1,-1,-1] and [ 1, 1,-1]
-    [ 1,  1,  0],  # between [ 1, 1,-1] and [ 1, 1, 1]
-    [ 1,  0,  1],  # between [ 1,-1, 1] and [ 1, 1, 1]
-    [-1,  0,  1],  # between [-1,-1, 1] and [-1, 1, 1]
-]
+DOT_COLOR = (150, 150, 150)
+DOT_RADIUS = 1
 
 k1 = 400
 k2 = 4
 
-theta = 0
-del_theta = math.pi / 18000
-
-DOT_COLOR = (255, 0, 0)
-DOT_RADIUS = 3
+theta = math.pi / 180
 
 def project_point(point):
     x = k1 * point[0] / (point[2] + k2) 
@@ -83,6 +48,48 @@ def show_all_points(color=DOT_COLOR, radius=DOT_RADIUS):
     for point in points:
         show_point(point, color=color, radius=radius)
 
+
+def generate_cube(step=0.33):
+    coords = []
+    val = -1
+    while val <= 1:
+        coords.append(round(val, 2))
+        val += step
+    coords[-1] = 1.0  # ensure exact endpoint
+
+    points = []
+    for x in coords:
+        for y in coords:
+            for z in coords:
+                # Only add if point is on the surface (at least one coordinate at boundary)
+                if abs(x) == 1 or abs(y) == 1 or abs(z) == 1:
+                    points.append([x, y, z])
+    return points
+
+def generate_torus(R=1.0, r=0.4, num_major=30, num_minor=15):
+    points = []
+
+    for i in range(num_major):
+        theta = (2 * math.pi * i) / num_major
+        cos_theta = math.cos(theta)
+        sin_theta = math.sin(theta)
+
+        for j in range(num_minor):
+            phi = (2 * math.pi * j) / num_minor
+            cos_phi = math.cos(phi)
+            sin_phi = math.sin(phi)
+
+            x = (R + r * cos_phi) * cos_theta
+            y = (R + r * cos_phi) * sin_theta
+            z = r * sin_phi
+
+            points.append([round(x, 4), round(y, 4), round(z, 4)])
+
+    return points
+
+# Points
+points = generate_torus()
+
 # Game loop
 running = True
 while running:
@@ -91,8 +98,6 @@ while running:
             running = False
 
     screen.fill((30, 30, 30))
-
-    theta += del_theta
 
     update_all_points_rotation(theta)
     show_all_points()
