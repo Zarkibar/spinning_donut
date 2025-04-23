@@ -1,11 +1,16 @@
+```md
 # Spinning Donut
-It's just a fun side project where I use my graphics programming knowledge to replicate the famous spinning donut project. Maybe I'll add some more objects later and probably a camera movement in the future. A mini game someday (who knows).
+It's just a fun side project where I use my graphics programming knowledge to replicate the famous spinning donut project. Maybe I'll add some more objects later and probably a camera movement in the future. A mini game someday? (who knows).
 
 ## 🚀 Features
 
-- 🔧 Does cool thing
-- 🌐 Supports another cool thing
-- 🔥 Fast, lightweight, actually useful
+- ASCII torus (or Pygame graphics for now)
+- Rotating in 3D
+- Customizable geometry
+
+## 🧪 Demo
+
+![Spinning donut demo](donut.gif)
 
 ## 📦 Installation
 
