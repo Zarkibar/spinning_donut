@@ -18,8 +18,8 @@ screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 DOT_COLOR = (150, 150, 150)
 DOT_RADIUS = 1
 
-k1 = 400
-k2 = 4
+k1 = 500
+k2 = 3
 
 theta = math.pi / 180
 
@@ -87,8 +87,20 @@ def generate_torus(R=1.0, r=0.4, num_major=30, num_minor=15):
 
     return points
 
+def load_vertices_from_obj(path):
+    vertices = []
+
+    with open(path, 'r') as file:
+        for line in file:
+            if line.startswith('v '):
+                parts = line.strip().split()
+                x, y, z = map(float, parts[1:4])
+                vertices.append([x, y, z])
+
+    return vertices
+
 # Points
-points = generate_torus()
+points = load_vertices_from_obj("obj/monkey.obj")
 
 # Game loop
 running = True

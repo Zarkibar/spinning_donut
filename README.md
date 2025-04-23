@@ -10,8 +10,9 @@ It's just a fun side project where I use my graphics programming knowledge to re
 
 ## 🧪 Demo
 
-![Spinning donut demo](donut.mp4)
-![Spinning cube demo](cube.mp4)
+![Spinning donut demo](demos/donut.gif)
+![Spinning cube demo](demos/cube.gif)
+![Spinning monkey demo](demos/monkey.gif)
 
 ## 📦 Installation
 
