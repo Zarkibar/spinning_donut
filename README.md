@@ -1,4 +1,4 @@
-```md
+
 # Spinning Donut
 It's just a fun side project where I use my graphics programming knowledge to replicate the famous spinning donut project. Maybe I'll add some more objects later and probably a camera movement in the future. A mini game someday? (who knows).
 
@@ -10,7 +10,8 @@ It's just a fun side project where I use my graphics programming knowledge to re
 
 ## 🧪 Demo
 
-![Spinning donut demo](donut.gif)
+![Spinning donut demo](donut.mp4)
+![Spinning cube demo](cube.mp4)
 
 ## 📦 Installation
 

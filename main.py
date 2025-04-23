@@ -88,7 +88,7 @@ def generate_torus(R=1.0, r=0.4, num_major=30, num_minor=15):
     return points
 
 # Points
-points = generate_cube()
+points = generate_torus()
 
 # Game loop
 running = True
