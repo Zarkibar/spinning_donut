@@ -28,7 +28,7 @@ class ZEngine:
     k1 = 600
     k2 = 1
 
-    def __init__(self, window_name: str, screen_width=600, screen_height=800, cam_move_speed=0.2, cam_rot_speed=0.1, dot_color=(150, 150, 150), dot_radius=2):
+    def __init__(self, window_name: str, screen_width=800, screen_height=600, cam_move_speed=0.2, cam_rot_speed=0.1, dot_color=(150, 150, 150), dot_radius=2):
         self.screen_width = screen_width
         self.screen_height = screen_height
 
@@ -44,8 +44,8 @@ class ZEngine:
         self.dot_radius = dot_radius
 
     def project_point(self, point):
-        x = self.k1 * point[0] / (point[2] + k2) 
-        y = self.k1 * point[1] / (point[2] + k2)
+        x = self.k1 * point[0] / (point[2] + self.k2) 
+        y = self.k1 * point[1] / (point[2] + self.k2)
         
         screen_x = int(x + self.screen_center[0])
         screen_y = int(y + self.screen_center[1])
@@ -150,11 +150,13 @@ class ZEngine:
         sys.exit()
 
 
-if __name__ == "_main__":
+if __name__ == "__main__":
     engine = ZEngine("Z ENGINE")
 
+    theta = math.pi / 180
+
     # Points
-    points = engine.load_vertices_from_obj("obj/monkey.obj")
+    points = engine.load_vertices_from_obj("monkey.obj")
 
     # Game loop
     running = True
@@ -165,13 +167,13 @@ if __name__ == "_main__":
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
-                    move_vertical = 1
+                    engine.move_vertical = 1
                 elif event.key == pygame.K_s:
-                    move_vertical = -1
+                    engine.move_vertical = -1
                 if event.key == pygame.K_d:
-                    move_horizontal = 1
+                    engine.move_horizontal = 1
                 elif event.key == pygame.K_a:
-                    move_horizontal = -1
+                    engine.move_horizontal = -1
 
                 # if event.key == pygame.K_UP:
                 #     rot_vertical = 1
@@ -184,13 +186,13 @@ if __name__ == "_main__":
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w:
-                    move_vertical = 0
+                    engine.move_vertical = 0
                 elif event.key == pygame.K_s:
-                    move_vertical = 0
+                    engine.move_vertical = 0
                 if event.key == pygame.K_d:
-                    move_horizontal = 0
+                    engine.move_horizontal = 0
                 elif event.key == pygame.K_a:
-                    move_horizontal = 0
+                    engine.move_horizontal = 0
 
                 # if event.key == pygame.K_UP:
                 #     rot_vertical = 0
@@ -203,15 +205,15 @@ if __name__ == "_main__":
 
         engine.screen.fill((30, 30, 30))
 
-        if move_vertical == 1:
-            engine.camera_pos[2] += engine.CAM_MOVE_SPEED
-        elif move_vertical == -1:
-            engine.camera_pos[2] -= engine.CAM_MOVE_SPEED
+        if engine.move_vertical == 1:
+            engine.camera_pos[2] += engine.cam_move_speed
+        elif engine.move_vertical == -1:
+            engine.camera_pos[2] -= engine.cam_move_speed
 
-        if move_horizontal == 1:
-            engine.camera_pos[0] += engine.AM_MOVE_SPEED
-        elif move_horizontal == -1:
-            engine.camera_pos[0] -= engine.CAM_MOVE_SPEED
+        if engine.move_horizontal == 1:
+            engine.camera_pos[0] += engine.cam_move_speed
+        elif engine.move_horizontal == -1:
+            engine.camera_pos[0] -= engine.cam_move_speed
 
         # if rot_horizontal == 1:
         #     camera_rot[1] += CAM_ROT_SPEED
@@ -222,7 +224,7 @@ if __name__ == "_main__":
         # elif rot_vertical == -1:
         #     camera_rot[1] -= CAM_ROT_SPEED
 
-        engine.update_all_points_rotation(points, engine.theta)
+        engine.update_all_points_rotation(points, theta)
         engine.show_all_points(points, engine.camera_pos, engine.camera_rot)
         
         pygame.display.flip()
