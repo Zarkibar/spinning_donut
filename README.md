@@ -22,3 +22,4 @@ How to get it up and running:
 git clone https://github.com/Zarkibar/spinning_donut.git
 cd spinning_donut
 pip install -r requirements.txt
+python main.py

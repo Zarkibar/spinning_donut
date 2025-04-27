@@ -15,14 +15,20 @@ clock = pygame.time.Clock()
 screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
 CAM_MOVE_SPEED = 0.2
+CAM_ROT_SPEED = 0.1
 DOT_COLOR = (150, 150, 150)
-DOT_RADIUS = 1
+DOT_RADIUS = 2
+
+camera_pos = [0,0,-5]
+camera_rot = [0,0]
+
+move_vertical = 0
+move_horizontal = 0
+rot_vertical = 0
+rot_horizontal = 0
 
 k1 = 500
 k2 = 3
-
-move_horizontal = 0
-move_vertical = 0
 
 theta = math.pi / 180
 
@@ -34,22 +40,48 @@ def project_point(point):
     screen_y = int(y + screen_center[1])
     return (screen_x, screen_y)
 
+def rotate_point_y(point, angle):
+    x, y, z = point
+    cos_a = math.cos(angle)
+    sin_a = math.sin(angle)
+    return [x * cos_a - z * sin_a, y, x * sin_a + z * cos_a]
+
+def rotate_point_x(point, angle):
+    x, y, z = point
+    cos_a = math.cos(angle)
+    sin_a = math.sin(angle)
+    return [x, y * cos_a - z * sin_a, y * sin_a + z * cos_a]
+
+def transform_point(point, cam_pos, cam_rot):
+    # Move point relative to camera
+    x = point[0] - cam_pos[0]
+    y = point[1] - cam_pos[1]
+    z = point[2] - cam_pos[2]
+
+    # Rotate around camera
+    point = rotate_point_y([x, y, z], -cam_rot[1])  # yaw (left-right)
+    point = rotate_point_x(point, -cam_rot[0])      # pitch (up-down)
+
+    return point
+
 def update_point_rotation(point, theta):
     x = point[0]
     z = point[2]
     point[2] = z * math.cos(theta) - x * math.sin(theta)
     point[0] = x * math.cos(theta) + z * math.sin(theta)
 
-def update_all_points_rotation(t):
-    for point in points:
+def update_all_points_rotation(p, t):
+    for point in p:
         update_point_rotation(point, t)
 
-def show_point(point, color=DOT_COLOR, radius=DOT_RADIUS):
-    pygame.draw.circle(screen, color, project_point(point), radius)
+def show_point(point, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
+    transformed = transform_point(point, cam_pos, cam_rot)
+    if transformed[2] > 0.01:
+        pygame.draw.circle(screen, color, project_point(transformed), radius)
 
-def show_all_points(color=DOT_COLOR, radius=DOT_RADIUS):
-    for point in points:
-        show_point(point, color=color, radius=radius)
+def show_all_points(p, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
+    for point in p:
+        show_point(point, cam_pos, cam_rot, color=color, radius=radius)
 
 
 def generate_cube(step=0.33):
@@ -111,7 +143,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 move_vertical = 1
@@ -121,6 +153,15 @@ while running:
                 move_horizontal = 1
             elif event.key == pygame.K_a:
                 move_horizontal = -1
+
+            # if event.key == pygame.K_UP:
+            #     rot_vertical = 1
+            # elif event.key == pygame.K_DOWN:
+            #     rot_vertical = -1
+            # if event.key == pygame.K_RIGHT:
+            #     rot_horizontal = 1
+            # elif event.key == pygame.K_LEFT:
+            #     rot_horizontal = -1
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_w:
@@ -132,26 +173,38 @@ while running:
             elif event.key == pygame.K_a:
                 move_horizontal = 0
 
+            # if event.key == pygame.K_UP:
+            #     rot_vertical = 0
+            # elif event.key == pygame.K_DOWN:
+            #     rot_vertical = 0
+            # if event.key == pygame.K_RIGHT:
+            #     rot_horizontal = 0
+            # elif event.key == pygame.K_LEFT:
+            #     rot_horizontal = 0
 
     screen.fill((30, 30, 30))
 
     if move_vertical == 1:
-        for point in points:
-            point[2] -= CAM_MOVE_SPEED
+        camera_pos[2] += CAM_MOVE_SPEED
     elif move_vertical == -1:
-        for point in points:
-            point[2] += CAM_MOVE_SPEED
+        camera_pos[2] -= CAM_MOVE_SPEED
 
     if move_horizontal == 1:
-        for point in points:
-            point[0] -= CAM_MOVE_SPEED
+        camera_pos[0] += CAM_MOVE_SPEED
     elif move_horizontal == -1:
-        for point in points:
-            point[0] += CAM_MOVE_SPEED
+        camera_pos[0] -= CAM_MOVE_SPEED
 
+    # if rot_horizontal == 1:
+    #     camera_rot[1] += CAM_ROT_SPEED
+    # elif rot_horizontal == -1:
+    #     camera_rot[1] -= CAM_ROT_SPEED
+    # if rot_vertical == 1:
+    #     camera_rot[0] += CAM_ROT_SPEED
+    # elif rot_vertical == -1:
+    #     camera_rot[1] -= CAM_ROT_SPEED
 
-    update_all_points_rotation(theta)
-    show_all_points()
+    update_all_points_rotation(points, theta)
+    show_all_points(points, camera_pos, camera_rot)
     
     pygame.display.flip()
     clock.tick(60)
