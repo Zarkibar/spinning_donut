@@ -126,7 +126,7 @@ def generate_torus(R=1.0, r=0.4, num_major=30, num_minor=15):
 def load_vertices_from_obj(path):
     vertices = []
 
-    with open(path, 'r') as file:
+    with open("obj/"+path, 'r') as file:
         for line in file:
             if line.startswith('v '):
                 parts = line.strip().split()
@@ -136,7 +136,7 @@ def load_vertices_from_obj(path):
     return vertices
 
 # Points
-points = load_vertices_from_obj("obj/monkey.obj")
+points = load_vertices_from_obj("monkey.obj")
 
 # Game loop
 running = True
