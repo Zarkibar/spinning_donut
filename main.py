@@ -1,7 +1,6 @@
 import pygame
 import sys
 import math
-from utility import ZEngine
 
 # Initialize Pygame
 pygame.init()
@@ -10,13 +9,13 @@ pygame.init()
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Game Window")
+pygame.display.set_caption("Spinning Donut")
 clock = pygame.time.Clock()
 
 screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
 CAM_MOVE_SPEED = 0.2
-CAM_ROT_SPEED = 0.1
+CAM_ROT_SPEED = 0.04
 DOT_COLOR = (150, 150, 150)
 DOT_RADIUS = 2
 
@@ -155,14 +154,14 @@ while running:
             elif event.key == pygame.K_a:
                 move_horizontal = -1
 
-            # if event.key == pygame.K_UP:
-            #     rot_vertical = 1
-            # elif event.key == pygame.K_DOWN:
-            #     rot_vertical = -1
-            # if event.key == pygame.K_RIGHT:
-            #     rot_horizontal = 1
-            # elif event.key == pygame.K_LEFT:
-            #     rot_horizontal = -1
+            if event.key == pygame.K_UP:
+                rot_vertical = 1
+            elif event.key == pygame.K_DOWN:
+                rot_vertical = -1
+            if event.key == pygame.K_RIGHT:
+                rot_horizontal = 1
+            elif event.key == pygame.K_LEFT:
+                rot_horizontal = -1
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_w:
@@ -174,14 +173,14 @@ while running:
             elif event.key == pygame.K_a:
                 move_horizontal = 0
 
-            # if event.key == pygame.K_UP:
-            #     rot_vertical = 0
-            # elif event.key == pygame.K_DOWN:
-            #     rot_vertical = 0
-            # if event.key == pygame.K_RIGHT:
-            #     rot_horizontal = 0
-            # elif event.key == pygame.K_LEFT:
-            #     rot_horizontal = 0
+            if event.key == pygame.K_UP:
+                rot_vertical = 0
+            elif event.key == pygame.K_DOWN:
+                rot_vertical = 0
+            if event.key == pygame.K_RIGHT:
+                rot_horizontal = 0
+            elif event.key == pygame.K_LEFT:
+                rot_horizontal = 0
 
     screen.fill((30, 30, 30))
 
@@ -195,14 +194,14 @@ while running:
     elif move_horizontal == -1:
         camera_pos[0] -= CAM_MOVE_SPEED
 
-    # if rot_horizontal == 1:
-    #     camera_rot[1] += CAM_ROT_SPEED
-    # elif rot_horizontal == -1:
-    #     camera_rot[1] -= CAM_ROT_SPEED
-    # if rot_vertical == 1:
-    #     camera_rot[0] += CAM_ROT_SPEED
-    # elif rot_vertical == -1:
-    #     camera_rot[1] -= CAM_ROT_SPEED
+    if rot_horizontal == 1:
+        camera_rot[1] -= CAM_ROT_SPEED
+    elif rot_horizontal == -1:
+        camera_rot[1] += CAM_ROT_SPEED
+    if rot_vertical == 1:
+        camera_rot[0] += CAM_ROT_SPEED
+    elif rot_vertical == -1:
+        camera_rot[1] -= CAM_ROT_SPEED
 
     update_all_points_rotation(points, theta)
     show_all_points(points, camera_pos, camera_rot)
