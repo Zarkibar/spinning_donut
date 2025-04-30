@@ -135,7 +135,7 @@ def load_vertices_from_obj(path):
     return vertices
 
 # Points
-points = load_vertices_from_obj("monkey.obj")
+points = generate_torus() # load_vertices_from_obj("monkey.obj")
 
 # Game loop
 running = True
@@ -144,64 +144,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
-                move_vertical = 1
-            elif event.key == pygame.K_s:
-                move_vertical = -1
-            if event.key == pygame.K_d:
-                move_horizontal = 1
-            elif event.key == pygame.K_a:
-                move_horizontal = -1
-
-            if event.key == pygame.K_UP:
-                rot_vertical = 1
-            elif event.key == pygame.K_DOWN:
-                rot_vertical = -1
-            if event.key == pygame.K_RIGHT:
-                rot_horizontal = 1
-            elif event.key == pygame.K_LEFT:
-                rot_horizontal = -1
-
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
-                move_vertical = 0
-            elif event.key == pygame.K_s:
-                move_vertical = 0
-            if event.key == pygame.K_d:
-                move_horizontal = 0
-            elif event.key == pygame.K_a:
-                move_horizontal = 0
-
-            if event.key == pygame.K_UP:
-                rot_vertical = 0
-            elif event.key == pygame.K_DOWN:
-                rot_vertical = 0
-            if event.key == pygame.K_RIGHT:
-                rot_horizontal = 0
-            elif event.key == pygame.K_LEFT:
-                rot_horizontal = 0
-
     screen.fill((30, 30, 30))
-
-    if move_vertical == 1:
-        camera_pos[2] += CAM_MOVE_SPEED
-    elif move_vertical == -1:
-        camera_pos[2] -= CAM_MOVE_SPEED
-
-    if move_horizontal == 1:
-        camera_pos[0] += CAM_MOVE_SPEED
-    elif move_horizontal == -1:
-        camera_pos[0] -= CAM_MOVE_SPEED
-
-    if rot_horizontal == 1:
-        camera_rot[1] -= CAM_ROT_SPEED
-    elif rot_horizontal == -1:
-        camera_rot[1] += CAM_ROT_SPEED
-    if rot_vertical == 1:
-        camera_rot[0] += CAM_ROT_SPEED
-    elif rot_vertical == -1:
-        camera_rot[1] -= CAM_ROT_SPEED
 
     update_all_points_rotation(points, theta)
     show_all_points(points, camera_pos, camera_rot)
