@@ -22,6 +22,10 @@ DOT_RADIUS = 2
 camera_pos = [0,0,-3]
 camera_rot = [0,0]
 
+light_dir = [-1, -1, -1]
+light_mag = math.sqrt(sum(c*c for c in light_dir))
+light_dir = [c / light_mag for c in light_dir]  # normalize
+
 move_vertical = 0
 move_horizontal = 0
 rot_vertical = 0
@@ -79,9 +83,22 @@ def show_point(point, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
     if transformed[2] > 0.01:
         pygame.draw.circle(screen, color, project_point(transformed), radius)
 
-def show_all_points(p, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
-    for point in p:
-        show_point(point, cam_pos, cam_rot, color=color, radius=radius)
+def show_all_points(points, normals, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
+    for point, normal in zip(points, normals):
+        transformed = transform_point(point, cam_pos, cam_rot)
+        normal_transformed = rotate_point_y(normal, -cam_rot[1])
+        normal_transformed = rotate_point_x(normal_transformed, -cam_rot[0])
+
+        if transformed[2] > 0.01:
+            lum = compute_luminance(normal_transformed, light_dir)
+            brightness = int(255 * lum)
+            col = (brightness, brightness, brightness)
+            pygame.draw.circle(screen, col, project_point(transformed), radius)
+
+def compute_luminance(normal, light_dir):
+    # Dot product between normal and light direction
+    dot = sum(n * l for n, l in zip(normal, light_dir))
+    return max(0, dot)
 
 
 def generate_cube(step=0.33):
@@ -103,6 +120,7 @@ def generate_cube(step=0.33):
 
 def generate_torus(R=1.0, r=0.4, num_major=30, num_minor=15):
     points = []
+    normals = []
 
     for i in range(num_major):
         theta = (2 * math.pi * i) / num_major
@@ -114,13 +132,19 @@ def generate_torus(R=1.0, r=0.4, num_major=30, num_minor=15):
             cos_phi = math.cos(phi)
             sin_phi = math.sin(phi)
 
+            # Point on surface
             x = (R + r * cos_phi) * cos_theta
             y = (R + r * cos_phi) * sin_theta
             z = r * sin_phi
+            points.append([x, y, z])
 
-            points.append([round(x, 4), round(y, 4), round(z, 4)])
+            # Normal vector (center of tube to surface point)
+            nx = cos_phi * cos_theta
+            ny = cos_phi * sin_theta
+            nz = sin_phi
+            normals.append([nx, ny, nz])
 
-    return points
+    return points, normals
 
 def load_vertices_from_obj(path):
     vertices = []
@@ -135,7 +159,7 @@ def load_vertices_from_obj(path):
     return vertices
 
 # Points
-points = generate_torus() # load_vertices_from_obj("monkey.obj")
+points, normals = generate_torus() # load_vertices_from_obj("monkey.obj")
 
 # Game loop
 running = True
@@ -144,10 +168,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((30, 30, 30))
+    screen.fill((0, 0, 0))
 
     update_all_points_rotation(points, theta)
-    show_all_points(points, camera_pos, camera_rot)
+    show_all_points(points, normals, camera_pos, camera_rot)
     
     pygame.display.flip()
     clock.tick(60)
