@@ -1,23 +1,27 @@
 import pygame
 import sys
 import math
+import os
 
 # Initialize Pygame
 pygame.init()
 
 # Set up display
-SCREEN_HEIGHT = 600
-SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600//10
+SCREEN_WIDTH = 800//10
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Spinning Donut")
 clock = pygame.time.Clock()
 
 screen_center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 
+display = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)]
+ASCII_CHARS = [" ", ".", ",", ":", "-", "=", "+", "*", "#", "%", "@"]
+
 CAM_MOVE_SPEED = 0.2
 CAM_ROT_SPEED = 0.04
 DOT_COLOR = (150, 150, 150)
-DOT_RADIUS = 2
+DOT_RADIUS = 1
 
 camera_pos = [0,0,-3]
 camera_rot = [0,0]
@@ -31,7 +35,7 @@ move_horizontal = 0
 rot_vertical = 0
 rot_horizontal = 0
 
-k1 = 600
+k1 = 100
 k2 = 1
 
 theta = math.pi / 180
@@ -81,6 +85,12 @@ def update_all_points_rotation(points, normals, t):
         normal[2] = z * math.cos(t) - x * math.sin(t)
         normal[0] = x * math.cos(t) + z * math.sin(t)
 
+def set_ascii(point: tuple, brightness):
+    try:
+        display[point[1]][point[0]] = brightness
+    except:
+        pass
+
 def show_point(point, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
     transformed = transform_point(point, cam_pos, cam_rot)
     if transformed[2] > 0.01:
@@ -96,6 +106,7 @@ def show_all_points(points, normals, cam_pos, cam_rot, color=DOT_COLOR, radius=D
             lum = compute_luminance(normal_transformed, light_dir)
             brightness = int(255 * lum)
             col = (brightness, brightness, brightness)
+            set_ascii(project_point(transformed), brightness)
             pygame.draw.circle(screen, col, project_point(transformed), radius)
 
 def compute_luminance(normal, light_dir):
@@ -175,6 +186,17 @@ while running:
 
     update_all_points_rotation(points, normals, theta)
     show_all_points(points, normals, camera_pos, camera_rot)
+
+    
+    os.system('cls')    # Windows
+    im = []
+    for row in display:
+        # Convert each pixel in the row to ASCII character
+        ascii_row = [ASCII_CHARS[p // 25] for p in row]
+        # Combine the row into a string
+        im.append("".join(ascii_row))
+    # Combine all rows with newlines
+    print("\n".join(im))
     
     pygame.display.flip()
     clock.tick(60)
