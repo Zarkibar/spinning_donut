@@ -22,7 +22,7 @@ DOT_RADIUS = 2
 camera_pos = [0,0,-3]
 camera_rot = [0,0]
 
-light_dir = [-1, -1, -1]
+light_dir = [1, -2, -2]
 light_mag = math.sqrt(sum(c*c for c in light_dir))
 light_dir = [c / light_mag for c in light_dir]  # normalize
 
@@ -68,15 +68,18 @@ def transform_point(point, cam_pos, cam_rot):
 
     return point
 
-def update_point_rotation(point, theta):
-    x = point[0]
-    z = point[2]
-    point[2] = z * math.cos(theta) - x * math.sin(theta)
-    point[0] = x * math.cos(theta) + z * math.sin(theta)
+def update_all_points_rotation(points, normals, t):
+    for point in points:
+        x = point[0]
+        z = point[2]
+        point[2] = z * math.cos(t) - x * math.sin(t)
+        point[0] = x * math.cos(t) + z * math.sin(t)
 
-def update_all_points_rotation(p, t):
-    for point in p:
-        update_point_rotation(point, t)
+    for normal in normals:
+        x = normal[0]
+        z = normal[2]
+        normal[2] = z * math.cos(t) - x * math.sin(t)
+        normal[0] = x * math.cos(t) + z * math.sin(t)
 
 def show_point(point, cam_pos, cam_rot, color=DOT_COLOR, radius=DOT_RADIUS):
     transformed = transform_point(point, cam_pos, cam_rot)
@@ -170,7 +173,7 @@ while running:
 
     screen.fill((0, 0, 0))
 
-    update_all_points_rotation(points, theta)
+    update_all_points_rotation(points, normals, theta)
     show_all_points(points, normals, camera_pos, camera_rot)
     
     pygame.display.flip()
