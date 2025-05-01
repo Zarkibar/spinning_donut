@@ -3,7 +3,7 @@
 It's just a fun side project where I use my graphics programming knowledge to replicate the famous spinning donut project.
 It has some other objects too like a cube or a custom obj object. I updated this project into a game engine in which I will try to make a simple game with these core concepts.
 
-The program has a fairly basic movement and mouse control for now.
+The project creates a bunch of points shaped like donut and projects them with a dot (ASCII will be added). It has luminance meaning it calculates the brightness of each point through the Dot Product of the light's direction vector and the surface normal vector.
 
 WASD - for movement
 UP,LEFT,DOWN,RIGHT - for mouse
